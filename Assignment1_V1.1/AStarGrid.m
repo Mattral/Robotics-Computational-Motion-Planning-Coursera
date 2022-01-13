@@ -112,7 +112,98 @@ while true
     %
     
     
+    % middle case
+    if( (j+1) <= nrows && (j-1) >= 1 && (i+1) <= ncols && (i-1) >= 1 )
+        if (j+1) <= nrows
+            up = sub2ind(size(map), i, j+1);
+        end
+        if (j-1) >= 1
+            down = sub2ind(size(map), i, j-1);
+        end
+        if (i+1) <= ncols
+            right = sub2ind(size(map), i+1, j);
+        end
+        if (i-1) >= 1
+            left = sub2ind(size(map), i-1, j);
+        end        
+        adjacent = [up down right left];
+    end
     
+    % corner cases
+
+    % top left
+    if( i == 1 && j == 1)
+        down = sub2ind(size(map),i+1,j);
+        right = sub2ind(size(map),i,j+1);
+        adjacent = [down right];
+    end
+
+    % top right
+    if( i == 1 && j == ncols)
+        down = sub2ind(size(map),i+1,j);
+        left = sub2ind(size(map),i,j-1);
+        adjacent = [down left];
+    end
+
+    % bottom left
+    if( i == nrows && j == 1 )
+        up = sub2ind(size(map),i-1,j);
+        right = sub2ind(size(map),i,j+1);
+        adjacent = [up right];
+    end
+
+    % bottom right
+    if( i == nrows && j == ncols )
+        up = sub2ind(size(map),i-1,j);
+        left = sub2ind(size(map),i,j-1);
+        adjacent = [up left];
+    end
+    
+    % edge cases
+    
+    % left edge
+    if(j == 1 && i ~= 1 && i ~= nrows)
+        up = sub2ind(size(map),i-1,j);
+        down = sub2ind(size(map),i+1,j);
+        right = sub2ind(size(map),i,j+1);
+        adjacent = [up down right];
+    end
+    
+    % right edge
+    if(j == ncols && i ~= 1 && i ~= nrows)
+        up = sub2ind(size(map),i-1,j);
+        down = sub2ind(size(map),i+1,j);
+        left = sub2ind(size(map),i,j-1);
+        adjacent = [up down left];
+    end
+    
+    % top edge
+    if(i == 1 && j ~= 1 && j ~= ncols)
+        down = sub2ind(size(map),i+1,j);
+        right = sub2ind(size(map),i,j+1);
+        left = sub2ind(size(map),i,j-1);
+        adjacent = [down right left];
+    end 
+    
+    if(i == nrows && j ~= 1 && j ~= ncols)
+        up = sub2ind(size(map),i-1,j);
+        right = sub2ind(size(map),i,j+1);
+        left = sub2ind(size(map),i,j-1);
+        adjacent = [up right left];
+    end
+    
+    % rest of code
+    for nums = 1:size(adjacent,2)
+        if(map(adjacent(nums)) == 1 || map(adjacent(nums)) == 4 || map(adjacent(nums)) == 6)
+            if g(adjacent(nums)) > g(current) + 1
+                g(adjacent(nums)) = g(current) + 1;
+                f(adjacent(nums)) = g(adjacent(nums))+H(adjacent(nums));
+                parent(adjacent(nums)) = current;
+                map(adjacent(nums)) = 4;
+            end
+        end
+    end
+    numExpanded = numExpanded + 1;
     
     
     %*********************************************************************
