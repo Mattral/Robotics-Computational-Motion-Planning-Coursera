@@ -14,7 +14,55 @@ function route = GradientBasedPlanner (f, start_coords, end_coords, max_its)
 
 %%% All of your code should be between the two lines of stars.
 % *******************************************************************
-route = 0;
+%route = 0;
 
+route = [];
+X = start_coords(1);
+Y = start_coords(2);
+route(1,:) = [X, Y];        % the start of the route
+
+
+step = sqrt(gx .^2 + gy.^2);
+% the distance between successive locations in the route should not be greater than 1.0.
+gx = gx ./step;     % normalizing x direction
+gy = gy ./step;     % normalizing y direction
+
+for i = 1:max_its
+%   x = max(1,min(size(f,1),round(x + step*gx(x, y))));
+%   y = max(1, min(size(f,2), round(y + step*gy(x,y))));
+%   step = max (abs(gx(Y, X)), abs(gy(Y, X)));
+%    if abs(gx(Y, X)) > abs(gy(Y, X))
+%        newX = X + sign(gx(Y, X));
+%        newY = Y;
+%     else
+%         newX = X;
+%         newY = Y + sign(gy(Y, X));
+%     end
+%    newX = X + fix (gx(Y, X)/step);
+%    newY = Y + fix (gy(Y, X)/step);
+%     if newX <=size(f, 2) && newX >=1
+%         X = newX;
+%     end
+%     if newY <=size(f, 1) && newY >=1
+%         Y = newY;
+%     end
+%     X = max(1, min(size(f,2), X + fix (gx(Y, X)/step)));
+%     Y = max(1, min(size(f, 1), Y + fix (gy(Y, X)/step)));
+
+    newX = X + gx(round(Y), round(X));
+    newY = Y + gy(round(Y), round(X));
+    if round(newX) <=size(f, 2) && round(newX) >=1
+        X = newX;
+    end
+    if round(newY) <=size(f, 1) && round(newY) >=1
+        Y = newY;
+    end
+    distGoal = sqrt((X - end_coords(1)) ^2 + (Y - end_coords(2)) ^2);
+%   if round(X) == end_coords(1) && round(Y) == end_coords(2)
+   if distGoal < 1.0
+       return;
+   end
+   route(i+1,:) = [X, Y];
+end
 % *******************************************************************
 end
