@@ -83,7 +83,17 @@ while true
     %%% All of your code should be between the two lines of stars. 
     % *******************************************************************
     
-    
+    % neighbors exclude "red" cells (already visited) but include "blue" cells
+    n = DijNeighbors (map, i, j);   
+
+    k = distances(n) > (distances(current) + 1);    % which cell has higher distance value 
+    indx = find (k ==1);                            % indx is the index in n of those cells
+    distances(n(indx)) = distances(current) + 1;    % update distance
+    distances(current) = Inf;                       % remove this node from further consideration
+    map(current) = 3;                               % mark current node as "expanded" (red)
+    parent(n(indx)) = current; 
+    map(n(indx)) = 4;
+
     % *******************************************************************
 end
 
